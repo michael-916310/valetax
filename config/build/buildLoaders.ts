@@ -23,5 +23,5 @@ export function BuildLoaders(options: BuildOptions): RuleSetRule[] {
 
     const cssLoaders = buildCssLoader(options.isDev);
 
-    return [fileLoader, svgLoader, codeBabelLoader, tsxCodeBabelLoader, cssLoaders];
+    return [fileLoader, svgLoader, codeBabelLoader, tsxCodeBabelLoader, ...cssLoaders];
 }
