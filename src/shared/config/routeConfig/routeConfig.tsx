@@ -1,5 +1,10 @@
+import { lazy } from 'react';
 import { RouteProps } from 'react-router-dom';
-import { Main } from 'pages/main';
+
+const Main = lazy(() => import('pages/main').then((module) => ({ default: module.default })));
+const NotFound = lazy(() =>
+  import('pages/not-found').then((module) => ({ default: module.default })),
+);
 
 export enum AppRoutes {
   MAIN = 'main',
@@ -18,6 +23,6 @@ export const routeConfig: Record<AppRoutes, RouteProps> = {
   },
   [AppRoutes.NOT_FOUND]: {
     path: RoutePath.not_found,
-    element: <div>not found </div>,
+    element: <NotFound />,
   },
 };

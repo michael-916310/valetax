@@ -1,12 +1,18 @@
-import React, { Suspense } from 'react';
+import { Flex, Spin } from 'antd';
 import { AppRouter } from 'app/providers/router';
-import { Button, Space } from 'antd';
 import { RatesPoller } from 'app/providers/StoreProvider/ui/RatesPoller';
+import { Suspense } from 'react';
 
 function App() {
   return (
     <div>
-      <Suspense fallback="">
+      <Suspense
+        fallback={
+          <Flex justify="center" align="center" style={{ height: '100vh' }}>
+            <Spin size="large" />
+          </Flex>
+        }
+      >
         <AppRouter />
         <RatesPoller />
       </Suspense>

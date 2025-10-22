@@ -3,7 +3,7 @@ import { InfoBar } from 'feature/infoBar';
 
 const { Title, Paragraph, Text } = Typography;
 
-export const Main = () => {
+const Main = () => {
   console.log('Page 1');
 
   return (
@@ -19,3 +19,5 @@ export const Main = () => {
     </Flex>
   );
 };
+
+export default Main;
