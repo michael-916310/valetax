@@ -1,8 +1,8 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { notification } from 'antd';
-import { ratesApi } from 'shared/api/ratesApi';
 import { setFetchMeta, setRates } from 'entities/rates';
 import { saveRatesToStorage } from 'entities/rates/model/persist';
+import { ratesApi } from 'shared/api/ratesApi';
 
 export const listenerMiddleware = createListenerMiddleware();
 
@@ -22,12 +22,10 @@ listenerMiddleware.startListening({
     const now = new Date().toISOString();
     const err = (action as any)?.error?.message || 'Unknown error';
     api.dispatch(setFetchMeta({ lastUpdated: now, status: 'error', error: err }));
-    saveRatesToStorage({ data: null, lastUpdated: now, status: 'error', error: err });
+
     notification.error({
       message: 'Не удалось получить курсы',
       description: err,
     });
   },
 });
-
-

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RatesResponse } from 'shared/api/ratesApi';
-import type { RatesState, FetchStatus } from './types';
+import type { FetchStatus, RatesState } from './types';
 
 const initialState: RatesState = {
   data: null,
   lastUpdated: null,
-  status: 'idle',
+  status: 'pending',
   error: undefined,
 };
 
@@ -29,5 +29,3 @@ const slice = createSlice({
 
 export const { setRates, setFetchMeta } = slice.actions;
 export const ratesReducer = slice.reducer;
-
-

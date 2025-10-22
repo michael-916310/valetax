@@ -1,6 +1,6 @@
 import type { RatesResponse } from 'shared/api/ratesApi';
 
-export type FetchStatus = 'idle' | 'success' | 'error';
+export type FetchStatus = 'pending' | 'success' | 'error';
 
 export interface RatesState {
   data: RatesResponse | null;
@@ -8,5 +8,3 @@ export interface RatesState {
   status: FetchStatus;
   error?: string;
 }
-
-
