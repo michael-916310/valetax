@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
 import { useGetRatesQuery } from 'shared/api/ratesApi';
-import { RATES_POLL_INTERVAL_MS } from 'shared/config/constants';
+import { RATES_POLL_INTERVAL_MS } from 'shared/constants';
 
 export const RatesPoller = () => {
   useGetRatesQuery(undefined, {
@@ -10,5 +9,3 @@ export const RatesPoller = () => {
 
   return null;
 };
-
-
