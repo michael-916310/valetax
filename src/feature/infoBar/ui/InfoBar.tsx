@@ -21,7 +21,7 @@ export const InfoBar = () => {
   const statusInfo = STATUS_INFO_MAP[status] || STATUS_INFO_MAP.pending;
 
   return (
-    <Flex vertical={isMobile} align="center" gap={16}>
+    <Flex vertical={isMobile} align="center" gap={16} style={{ marginBottom: 30 }}>
       <Button variant="outlined" color={statusInfo.color} icon={statusInfo.icon}>
         <Text
           type={status === 'success' ? 'success' : status === 'error' ? 'danger' : 'secondary'}

@@ -1,4 +1,6 @@
 import { Flex, Typography } from 'antd';
+import { ConvertionPanel } from 'feature';
+
 import { InfoBar } from 'feature/infoBar';
 
 const { Title, Paragraph, Text } = Typography;
@@ -16,6 +18,7 @@ const Main = () => {
       </Paragraph>
 
       <InfoBar />
+      <ConvertionPanel />
     </Flex>
   );
 };
