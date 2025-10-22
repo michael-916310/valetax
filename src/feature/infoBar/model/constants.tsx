@@ -9,7 +9,7 @@ export const STATUS_INFO_MAP = {
   },
   error: {
     color: 'red',
-    text: 'Error',
+    text: 'Offline',
     icon: <ExclamationCircleOutlined />,
   },
   pending: {
