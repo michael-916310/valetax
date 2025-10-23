@@ -1,13 +1,20 @@
 import { SwapOutlined } from '@ant-design/icons';
 import { Button, Card, Flex, InputNumber, InputNumberProps, Typography } from 'antd';
+import { useAppSelector } from 'app/providers/StoreProvider';
+import { selectActualRatesData } from 'entities/rates';
 import { useEffect, useState } from 'react';
 import { CurrencyCard } from 'shared/ui';
+import { loadConversionSettings, saveConversionSettings } from 'shared/utils/conversionStorage';
 
 export const EnterData = () => {
-  const [localAmount, setLocalAmount] = useState<number | null>(1);
-  const [debouncedAmount, setDebouncedAmount] = useState<number | null>(1);
-  const [fromCurrency, setFromCurrency] = useState('USD');
-  const [toCurrency, setToCurrency] = useState('EUR');
+  const savedSettings = loadConversionSettings();
+
+  const [localAmount, setLocalAmount] = useState<number | null>(savedSettings?.amount ?? 1);
+  const [debouncedAmount, setDebouncedAmount] = useState<number | null>(savedSettings?.amount ?? 1);
+  const [fromCurrency, setFromCurrency] = useState(savedSettings?.fromCurrency ?? 'USD');
+  const [toCurrency, setToCurrency] = useState(savedSettings?.toCurrency ?? 'EUR');
+
+  const ratesData = useAppSelector(selectActualRatesData);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -60,11 +67,35 @@ export const EnterData = () => {
   };
 
   useEffect(() => {
+    saveConversionSettings(debouncedAmount, fromCurrency, toCurrency);
+  }, [fromCurrency]);
+
+  useEffect(() => {
+    saveConversionSettings(debouncedAmount, fromCurrency, toCurrency);
+  }, [toCurrency]);
+
+  useEffect(() => {
     if (debouncedAmount && fromCurrency && toCurrency) {
-      // Здесь будет выполняться конвертация
+      saveConversionSettings(debouncedAmount, fromCurrency, toCurrency);
       console.log('Converting:', debouncedAmount, fromCurrency, 'to', toCurrency);
     }
   }, [debouncedAmount, fromCurrency, toCurrency]);
+
+  useEffect(() => {
+    if (!ratesData?.rates) return;
+
+    const availableCodes = Object.keys(ratesData.rates);
+
+    if (!availableCodes.includes(fromCurrency)) {
+      const fallback = availableCodes[0] || 'USD';
+      setFromCurrency(fallback);
+    }
+
+    if (!availableCodes.includes(toCurrency)) {
+      const fallback = availableCodes[1] || 'EUR';
+      setToCurrency(fallback);
+    }
+  }, [ratesData]);
 
   return (
     <Card style={{ borderRadius: 16 }}>
