@@ -2,6 +2,7 @@ import { ClockCircleOutlined, RedoOutlined } from '@ant-design/icons';
 import { Button, Flex, Grid, Typography } from 'antd';
 import { useAppSelector } from 'app/providers/StoreProvider';
 import { selectRatesLastUpdated, selectRatesStatus } from 'entities/rates';
+import { useCallback, useRef, useState } from 'react';
 import { BLUE_COLOR } from 'shared';
 import { useGetRatesQuery } from 'shared/api/ratesApi';
 import { STATUS_INFO_MAP } from '../model';
@@ -19,6 +20,26 @@ export const InfoBar = () => {
   const formatedLastUpdated = lastUpdated ? new Date(lastUpdated).toLocaleString() : 'N/A';
 
   const statusInfo = STATUS_INFO_MAP[status] || STATUS_INFO_MAP.pending;
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleRefresh = useCallback(() => {
+    if (isRefreshing) return;
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    setIsRefreshing(true);
+
+    refetch();
+
+    debounceTimerRef.current = setTimeout(() => {
+      setIsRefreshing(false);
+      debounceTimerRef.current = null;
+    }, 2000);
+  }, [isRefreshing, refetch]);
 
   return (
     <Flex vertical={isMobile} align="center" gap={16} style={{ marginBottom: 30 }}>
@@ -43,10 +64,12 @@ export const InfoBar = () => {
         variant="outlined"
         color={'blue'}
         icon={<RedoOutlined style={{ color: BLUE_COLOR }} />}
-        onClick={() => refetch()}
+        onClick={handleRefresh}
+        loading={isRefreshing}
+        disabled={isRefreshing}
       >
         <Text style={{ color: BLUE_COLOR }} strong>
-          Refresh rates
+          {isRefreshing ? 'Refreshing...' : 'Refresh rates'}
         </Text>
       </Button>
     </Flex>
