@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { CurrencyCard } from 'shared/ui';
 
 export const EnterData = () => {
-  console.log('EnterDataForm');
-
   const [localAmount, setLocalAmount] = useState<number | null>(1);
   const [debouncedAmount, setDebouncedAmount] = useState<number | null>(1);
   const [fromCurrency, setFromCurrency] = useState('USD');
@@ -23,11 +21,31 @@ export const EnterData = () => {
     setLocalAmount(value as number | null);
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'Tab',
+      'Enter',
+      'ArrowLeft',
+      'ArrowRight',
+      'Home',
+      'End',
+    ];
+    const allowedChars = /[0-9.,]/;
+
+    if (allowedKeys.includes(e.key)) {
+      return;
+    }
+
+    if (!allowedChars.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   const parser = (value: string | undefined) => {
     if (!value) return '';
-    // Убираем все, кроме цифр, точки и запятой
     const cleaned = value.replace(/[^\d.,]/g, '');
-    // Заменяем запятую на точку
     return cleaned.replace(/,/g, '.');
   };
 
@@ -57,6 +75,7 @@ export const EnterData = () => {
             min={0}
             value={localAmount}
             onChange={onChange}
+            onKeyPress={handleKeyPress}
             parser={parser}
             formatter={formatter}
             placeholder="Enter amount"
