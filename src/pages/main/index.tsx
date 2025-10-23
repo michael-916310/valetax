@@ -6,8 +6,6 @@ import { InfoBar } from 'feature/infoBar';
 const { Title, Paragraph, Text } = Typography;
 
 const Main = () => {
-  console.log('Page 1');
-
   return (
     <Flex vertical={true} align="center" style={{ height: '100vh' }}>
       <Paragraph style={{ textAlign: 'center', marginBottom: 30 }}>

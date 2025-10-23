@@ -6,9 +6,7 @@ export function saveRatesToStorage(state: RatesState) {
   try {
     const serialized = JSON.stringify(state);
     localStorage.setItem(STORAGE_KEY, serialized);
-  } catch (e) {
-    // ignore storage errors
-  }
+  } catch (e) {}
 }
 
 export function loadRatesFromStorage(): RatesState | undefined {
@@ -20,5 +18,3 @@ export function loadRatesFromStorage(): RatesState | undefined {
     return undefined;
   }
 }
-
-

@@ -48,7 +48,6 @@ export const CurrencySelectModal = ({
       setHighlightedIndex(selectedIndex >= 0 ? selectedIndex : 0);
       setSearchText('');
 
-      // Устанавливаем фокус на input с небольшой задержкой для корректной работы
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);

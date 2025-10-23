@@ -6,13 +6,31 @@ import { useEffect, useState } from 'react';
 import { CurrencyCard } from 'shared/ui';
 import { loadConversionSettings, saveConversionSettings } from 'shared/utils/conversionStorage';
 
-export const EnterData = () => {
+interface EnterDataProps {
+  amount: number | null;
+  fromCurrency: string;
+  toCurrency: string;
+  onAmountChange: (amount: number | null) => void;
+  onFromCurrencyChange: (currency: string) => void;
+  onToCurrencyChange: (currency: string) => void;
+  onConvertedAmountChange: (amount: number) => void;
+  onExchangeRateChange: (rate: number) => void;
+}
+
+export const EnterData = ({
+  amount,
+  fromCurrency,
+  toCurrency,
+  onAmountChange,
+  onFromCurrencyChange,
+  onToCurrencyChange,
+  onConvertedAmountChange,
+  onExchangeRateChange,
+}: EnterDataProps) => {
   const savedSettings = loadConversionSettings();
 
   const [localAmount, setLocalAmount] = useState<number | null>(savedSettings?.amount ?? 1);
   const [debouncedAmount, setDebouncedAmount] = useState<number | null>(savedSettings?.amount ?? 1);
-  const [fromCurrency, setFromCurrency] = useState(savedSettings?.fromCurrency ?? 'USD');
-  const [toCurrency, setToCurrency] = useState(savedSettings?.toCurrency ?? 'EUR');
 
   const ratesData = useAppSelector(selectActualRatesData);
 
@@ -25,7 +43,9 @@ export const EnterData = () => {
   }, [localAmount]);
 
   const onChange: InputNumberProps['onChange'] = (value) => {
-    setLocalAmount(value as number | null);
+    const newAmount = value as number | null;
+    setLocalAmount(newAmount);
+    onAmountChange(newAmount);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -62,8 +82,8 @@ export const EnterData = () => {
   };
 
   const handleSwapCurrencies = () => {
-    setFromCurrency(toCurrency);
-    setToCurrency(fromCurrency);
+    onFromCurrencyChange(toCurrency);
+    onToCurrencyChange(fromCurrency);
   };
 
   useEffect(() => {
@@ -77,9 +97,23 @@ export const EnterData = () => {
   useEffect(() => {
     if (debouncedAmount && fromCurrency && toCurrency) {
       saveConversionSettings(debouncedAmount, fromCurrency, toCurrency);
-      console.log('Converting:', debouncedAmount, fromCurrency, 'to', toCurrency);
+
+      if (ratesData?.rates) {
+        const rate = ratesData.rates[toCurrency] / ratesData.rates[fromCurrency];
+        const convertedAmount = debouncedAmount * rate;
+
+        onExchangeRateChange(rate);
+        onConvertedAmountChange(convertedAmount);
+      }
     }
-  }, [debouncedAmount, fromCurrency, toCurrency]);
+  }, [
+    debouncedAmount,
+    fromCurrency,
+    toCurrency,
+    ratesData,
+    onExchangeRateChange,
+    onConvertedAmountChange,
+  ]);
 
   useEffect(() => {
     if (!ratesData?.rates) return;
@@ -88,12 +122,12 @@ export const EnterData = () => {
 
     if (!availableCodes.includes(fromCurrency)) {
       const fallback = availableCodes[0] || 'USD';
-      setFromCurrency(fallback);
+      onFromCurrencyChange(fallback);
     }
 
     if (!availableCodes.includes(toCurrency)) {
       const fallback = availableCodes[1] || 'EUR';
-      setToCurrency(fallback);
+      onToCurrencyChange(fallback);
     }
   }, [ratesData]);
 
@@ -119,7 +153,7 @@ export const EnterData = () => {
         <Flex align="center" gap={16}>
           <Flex vertical gap={8} style={{ flex: 1 }}>
             <Typography.Text strong>From</Typography.Text>
-            <CurrencyCard value={fromCurrency} onChange={setFromCurrency} />
+            <CurrencyCard value={fromCurrency} onChange={onFromCurrencyChange} />
           </Flex>
 
           <Button
@@ -136,7 +170,7 @@ export const EnterData = () => {
 
           <Flex vertical gap={8} style={{ flex: 1 }}>
             <Typography.Text strong>To</Typography.Text>
-            <CurrencyCard value={toCurrency} onChange={setToCurrency} />
+            <CurrencyCard value={toCurrency} onChange={onToCurrencyChange} />
           </Flex>
         </Flex>
       </Flex>
