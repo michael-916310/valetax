@@ -2,7 +2,7 @@ import { ClockCircleOutlined, RedoOutlined } from '@ant-design/icons';
 import { Button, Flex, Grid, Typography } from 'antd';
 import { useAppSelector } from 'app/providers/StoreProvider';
 import { selectRatesLastUpdated, selectRatesStatus } from 'entities/rates';
-import { useCallback, useRef, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import { BLUE_COLOR } from 'shared';
 import { useGetRatesQuery } from 'shared/api/ratesApi';
 import { STATUS_INFO_MAP } from '../model';
@@ -10,7 +10,7 @@ import { STATUS_INFO_MAP } from '../model';
 const { Title, Paragraph, Text } = Typography;
 const { useBreakpoint } = Grid;
 
-export const InfoBar = () => {
+export const InfoBar = memo(() => {
   const screens = useBreakpoint();
   const isMobile = !screens.lg;
 
@@ -74,4 +74,4 @@ export const InfoBar = () => {
       </Button>
     </Flex>
   );
-};
+});

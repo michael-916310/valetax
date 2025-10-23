@@ -1,10 +1,15 @@
-import { Avatar, Card, Flex, Typography } from 'antd';
+import { Avatar, Card, Flex, Spin, Typography } from 'antd';
 import { useAppSelector } from 'app/providers/StoreProvider';
 import { selectActualRatesData } from 'entities/rates';
-import { useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useMemo, useState } from 'react';
 import { getCurrencyByCode } from 'shared/constants/currencies';
 import { enrichCurrenciesWithRates } from 'shared/utils/enrichCurrencies';
-import { CurrencySelectModal } from '../currencySelectModal/CurrencySelectModal';
+
+const CurrencySelectModal = lazy(() =>
+  import('../currencySelectModal/CurrencySelectModal').then((m) => ({
+    default: m.CurrencySelectModal,
+  })),
+);
 
 const { Text } = Typography;
 
@@ -42,14 +47,17 @@ export const CurrencyCard = ({
     return enrichCurrenciesWithRates(ratesData.rates);
   }, [ratesData]);
 
-  const handleCardClick = () => {
+  const handleCardClick = useCallback(() => {
     setModalOpen(true);
-  };
+  }, []);
 
-  const handleCurrencySelect = (currencyCode: string) => {
-    onChange(currencyCode);
-    setModalOpen(false);
-  };
+  const handleCurrencySelect = useCallback(
+    (currencyCode: string) => {
+      onChange(currencyCode);
+      setModalOpen(false);
+    },
+    [onChange],
+  );
 
   return (
     <>
@@ -89,13 +97,17 @@ export const CurrencyCard = ({
         </Flex>
       </Card>
 
-      <CurrencySelectModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        value={value}
-        onChange={handleCurrencySelect}
-        currencies={enrichedCurrencies}
-      />
+      {modalOpen && (
+        <Suspense fallback={<Spin />}>
+          <CurrencySelectModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            value={value}
+            onChange={handleCurrencySelect}
+            currencies={enrichedCurrencies}
+          />
+        </Suspense>
+      )}
     </>
   );
 };
