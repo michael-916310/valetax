@@ -23,14 +23,14 @@ export const ConversionResult = ({
   const inverseRate = 1 / exchangeRate;
 
   return (
-    <Card style={{ borderRadius: 16 }}>
+    <Card style={{ borderRadius: 16, width: '304px' }}>
       <Flex vertical gap={16}>
         <Title level={5} style={{ margin: 0 }}>
           Conversion result
         </Title>
 
         <Flex vertical align="center" gap={4}>
-          <Text style={{ fontSize: 40, fontWeight: 'bold', lineHeight: 1 }}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', lineHeight: 1 }}>
             {symbol}
             {convertedAmount.toFixed(2)}
           </Text>

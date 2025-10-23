@@ -7,7 +7,7 @@ const { useBreakpoint } = Grid;
 
 export const ConvertionPanel = () => {
   const screens = useBreakpoint();
-  const isMobile = !screens.md;
+  const isMobile = !screens.lg;
 
   const [amount, setAmount] = useState<number | null>(1);
   const [fromCurrency, setFromCurrency] = useState('USD');
@@ -16,7 +16,7 @@ export const ConvertionPanel = () => {
   const [exchangeRate, setExchangeRate] = useState<number>(0);
 
   return (
-    <Flex vertical={isMobile} gap={30}>
+    <Flex vertical={isMobile} gap={30} align="center">
       <EnterData
         amount={amount}
         fromCurrency={fromCurrency}

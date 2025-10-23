@@ -12,7 +12,7 @@ const { useBreakpoint } = Grid;
 
 export const InfoBar = () => {
   const screens = useBreakpoint();
-  const isMobile = !screens.md;
+  const isMobile = !screens.lg;
 
   const { refetch } = useGetRatesQuery();
   const status = useAppSelector(selectRatesStatus);

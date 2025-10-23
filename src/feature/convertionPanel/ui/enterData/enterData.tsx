@@ -1,10 +1,12 @@
 import { SwapOutlined } from '@ant-design/icons';
-import { Button, Card, Flex, InputNumber, InputNumberProps, Typography } from 'antd';
+import { Button, Card, Flex, Grid, InputNumber, InputNumberProps, Typography } from 'antd';
 import { useAppSelector } from 'app/providers/StoreProvider';
 import { selectActualRatesData } from 'entities/rates';
 import { useEffect, useState } from 'react';
 import { CurrencyCard } from 'shared/ui';
 import { loadConversionSettings, saveConversionSettings } from 'shared/utils/conversionStorage';
+
+const { useBreakpoint } = Grid;
 
 interface EnterDataProps {
   amount: number | null;
@@ -27,6 +29,9 @@ export const EnterData = ({
   onConvertedAmountChange,
   onExchangeRateChange,
 }: EnterDataProps) => {
+  const screens = useBreakpoint();
+  const isMobile = !screens.lg;
+
   const savedSettings = loadConversionSettings();
 
   const [localAmount, setLocalAmount] = useState<number | null>(savedSettings?.amount ?? 1);
@@ -133,8 +138,8 @@ export const EnterData = ({
 
   return (
     <Card style={{ borderRadius: 16 }}>
-      <Flex vertical gap={24}>
-        <Flex vertical gap={8}>
+      <Flex gap={24} vertical={true}>
+        <Flex gap={8} vertical={true}>
           <Typography.Text strong>Amount</Typography.Text>
           <InputNumber
             min={0}
@@ -150,7 +155,7 @@ export const EnterData = ({
           />
         </Flex>
 
-        <Flex align="center" gap={16}>
+        <Flex align="center" gap={16} vertical={isMobile}>
           <Flex vertical gap={8} style={{ flex: 1 }}>
             <Typography.Text strong>From</Typography.Text>
             <CurrencyCard value={fromCurrency} onChange={onFromCurrencyChange} />
@@ -161,10 +166,10 @@ export const EnterData = ({
             icon={<SwapOutlined style={{ transform: 'rotate(180deg)' }} />}
             onClick={handleSwapCurrencies}
             style={{
-              alignSelf: 'flex-end',
+              alignSelf: isMobile ? 'center' : 'flex-end',
               fontSize: '20px',
               color: '#666',
-              marginBottom: 20,
+              marginBottom: isMobile ? 0 : 20,
             }}
           />
 
