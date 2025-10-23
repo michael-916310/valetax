@@ -1,6 +1,9 @@
 import { Avatar, Card, Flex, Typography } from 'antd';
-import { useState } from 'react';
-import { CURRENCIES, getCurrencyByCode } from 'shared/constants/currencies';
+import { useAppSelector } from 'app/providers/StoreProvider';
+import { selectActualRatesData } from 'entities/rates';
+import { useMemo, useState } from 'react';
+import { getCurrencyByCode } from 'shared/constants/currencies';
+import { enrichCurrenciesWithRates } from 'shared/utils/enrichCurrencies';
 import { CurrencySelectModal } from '../currencySelectModal/CurrencySelectModal';
 
 const { Text } = Typography;
@@ -18,7 +21,26 @@ export const CurrencyCard = ({
 }: CurrencyCardProps) => {
   const [modalOpen, setModalOpen] = useState(false);
 
+  const ratesData = useAppSelector(selectActualRatesData);
   const selectedCurrency = getCurrencyByCode(value);
+
+  const enrichedCurrencies = useMemo(() => {
+    if (!ratesData?.rates) {
+      const fallbackCodes = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
+      return fallbackCodes
+        .map((code) => getCurrencyByCode(code))
+        .filter(Boolean)
+        .map((currency) => ({
+          code: currency!.code,
+          rate: 1,
+          name: currency!.name,
+          symbolNative: currency!.symbolNative,
+          flagSrc: currency!.flagSrc,
+          symbol: currency!.symbol,
+        }));
+    }
+    return enrichCurrenciesWithRates(ratesData.rates);
+  }, [ratesData]);
 
   const handleCardClick = () => {
     setModalOpen(true);
@@ -72,7 +94,7 @@ export const CurrencyCard = ({
         onClose={() => setModalOpen(false)}
         value={value}
         onChange={handleCurrencySelect}
-        currencies={CURRENCIES}
+        currencies={enrichedCurrencies}
       />
     </>
   );

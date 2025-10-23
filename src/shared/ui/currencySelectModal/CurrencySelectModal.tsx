@@ -1,7 +1,7 @@
 import { CheckOutlined, SearchOutlined } from '@ant-design/icons';
-import { Avatar, Flex, Input, List, Modal, Typography } from 'antd';
+import { Avatar, Empty, Flex, Input, List, Modal, Typography } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Currency } from 'shared/constants/currencies';
+import type { EnrichedCurrency } from 'shared/utils/enrichCurrencies';
 
 const { Text } = Typography;
 
@@ -10,7 +10,7 @@ interface CurrencySelectModalProps {
   onClose: () => void;
   value: string;
   onChange: (currencyCode: string) => void;
-  currencies: Currency[];
+  currencies: EnrichedCurrency[];
 }
 
 export const CurrencySelectModal = ({
@@ -128,60 +128,68 @@ export const CurrencySelectModal = ({
         style={{ marginBottom: 16 }}
       />
 
-      <List
-        ref={listRef}
-        dataSource={filteredCurrencies}
-        renderItem={(currency, index) => {
-          const isSelected = value === currency.code;
-          const isHighlighted = index === highlightedIndex;
+      {filteredCurrencies.length === 0 ? (
+        <Empty description="No currencies available" />
+      ) : (
+        <List
+          ref={listRef}
+          dataSource={filteredCurrencies}
+          renderItem={(currency, index) => {
+            const isSelected = value === currency.code;
+            const isHighlighted = index === highlightedIndex;
 
-          return (
-            <List.Item
-              data-index={index}
-              onClick={() => handleCurrencySelect(currency.code)}
-              onMouseEnter={() => setHighlightedIndex(index)}
-              style={{
-                cursor: 'pointer',
-                padding: '12px 16px',
-                backgroundColor: isSelected ? '#f0f0f0' : isHighlighted ? '#e6f7ff' : 'transparent',
-                borderRadius: 8,
-                marginBottom: 4,
-                border: isHighlighted ? '2px solid #1890ff' : '2px solid transparent',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <Flex align="center" justify="space-between" style={{ width: '100%' }}>
-                <Flex align="center" gap={12}>
-                  <Avatar
-                    style={{
-                      backgroundColor: '#1890ff',
-                      color: 'white',
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                    }}
-                    size={32}
-                  >
-                    {currency.symbolNative}
-                  </Avatar>
-                  <Flex vertical gap={0}>
-                    <Text strong style={{ fontSize: 16 }}>
-                      {currency.code}
-                    </Text>
-                    <Text type="secondary" style={{ fontSize: 12 }}>
-                      {currency.name}
-                    </Text>
+            return (
+              <List.Item
+                data-index={index}
+                onClick={() => handleCurrencySelect(currency.code)}
+                onMouseEnter={() => setHighlightedIndex(index)}
+                style={{
+                  cursor: 'pointer',
+                  padding: '12px 16px',
+                  backgroundColor: isSelected
+                    ? '#f0f0f0'
+                    : isHighlighted
+                      ? '#e6f7ff'
+                      : 'transparent',
+                  borderRadius: 8,
+                  marginBottom: 4,
+                  border: isHighlighted ? '2px solid #1890ff' : '2px solid transparent',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <Flex align="center" justify="space-between" style={{ width: '100%' }}>
+                  <Flex align="center" gap={12}>
+                    <Avatar
+                      style={{
+                        backgroundColor: '#1890ff',
+                        color: 'white',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                      }}
+                      size={32}
+                    >
+                      {currency.symbolNative}
+                    </Avatar>
+                    <Flex vertical gap={0}>
+                      <Text strong style={{ fontSize: 16 }}>
+                        {currency.code}
+                      </Text>
+                      <Text type="secondary" style={{ fontSize: 12 }}>
+                        {currency.name}
+                      </Text>
+                    </Flex>
                   </Flex>
-                </Flex>
 
-                {value === currency.code && (
-                  <CheckOutlined style={{ color: '#1890ff', fontSize: 16 }} />
-                )}
-              </Flex>
-            </List.Item>
-          );
-        }}
-        style={{ maxHeight: 400, overflowY: 'auto' }}
-      />
+                  {value === currency.code && (
+                    <CheckOutlined style={{ color: '#1890ff', fontSize: 16 }} />
+                  )}
+                </Flex>
+              </List.Item>
+            );
+          }}
+          style={{ maxHeight: 400, overflowY: 'auto' }}
+        />
+      )}
     </Modal>
   );
 };
