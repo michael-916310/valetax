@@ -33,7 +33,10 @@ export const InfoBar = () => {
 
       <Flex gap={4}>
         <ClockCircleOutlined style={{ color: 'rgba(0, 0, 0, 0.45)' }} />
-        <Text type="secondary">Last updated: {formatedLastUpdated}</Text>
+        <Text type="secondary">
+          {status === 'success' ? 'Last updated: ' : 'Using cached rates from: '}
+          {formatedLastUpdated}
+        </Text>
       </Flex>
 
       <Button

@@ -38,6 +38,8 @@ export const CurrencyCard = ({
           cursor: 'pointer',
           borderRadius: 8,
           border: '1px solid #d9d9d9',
+          width: '255px',
+          height: '70px',
         }}
         bodyStyle={{ padding: '12px 16px' }}
       >
@@ -48,6 +50,7 @@ export const CurrencyCard = ({
               color: 'white',
               fontSize: 16,
               fontWeight: 'bold',
+              flexShrink: 0,
             }}
             size={32}
           >
@@ -57,7 +60,7 @@ export const CurrencyCard = ({
             <Text strong style={{ fontSize: 16 }}>
               {selectedCurrency?.code || placeholder}
             </Text>
-            <Text type="secondary" style={{ fontSize: 12 }}>
+            <Text type="secondary" style={{ fontSize: 12, maxWidth: '190px' }} ellipsis>
               {selectedCurrency?.name || ''}
             </Text>
           </Flex>

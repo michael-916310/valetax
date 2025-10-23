@@ -24,7 +24,7 @@ listenerMiddleware.startListening({
     api.dispatch(setFetchMeta({ lastUpdated: now, status: 'error', error: err }));
 
     notification.error({
-      message: 'Не удалось получить курсы',
+      message: 'Unable to obtain rates',
       description: err,
     });
   },

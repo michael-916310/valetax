@@ -59,13 +59,13 @@ export const EnterData = () => {
 
           <Button
             type="text"
-            icon={<SwapOutlined style={{ transform: 'rotate(90deg)' }} />}
+            icon={<SwapOutlined style={{ transform: 'rotate(180deg)' }} />}
             onClick={handleSwapCurrencies}
             style={{
               alignSelf: 'flex-end',
-              marginBottom: '8px',
               fontSize: '20px',
               color: '#666',
+              marginBottom: 20,
             }}
           />
 
