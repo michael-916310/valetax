@@ -1,18 +1,26 @@
 import { SwapOutlined } from '@ant-design/icons';
 import { Button, Card, Flex, InputNumber, InputNumberProps, Typography } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CurrencyCard } from 'shared/ui';
 
 export const EnterData = () => {
   console.log('EnterDataForm');
 
-  const [amount, setAmount] = useState<number | null>(1);
+  const [localAmount, setLocalAmount] = useState<number | null>(1);
+  const [debouncedAmount, setDebouncedAmount] = useState<number | null>(1);
   const [fromCurrency, setFromCurrency] = useState('USD');
   const [toCurrency, setToCurrency] = useState('EUR');
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedAmount(localAmount);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [localAmount]);
+
   const onChange: InputNumberProps['onChange'] = (value) => {
-    console.log('changed', value);
-    setAmount(value as number | null);
+    setLocalAmount(value as number | null);
   };
 
   const parser = (value: string | undefined) => {
@@ -33,6 +41,13 @@ export const EnterData = () => {
     setToCurrency(fromCurrency);
   };
 
+  useEffect(() => {
+    if (debouncedAmount && fromCurrency && toCurrency) {
+      // Здесь будет выполняться конвертация
+      console.log('Converting:', debouncedAmount, fromCurrency, 'to', toCurrency);
+    }
+  }, [debouncedAmount, fromCurrency, toCurrency]);
+
   return (
     <Card style={{ borderRadius: 16 }}>
       <Flex vertical gap={24}>
@@ -40,7 +55,7 @@ export const EnterData = () => {
           <Typography.Text strong>Amount</Typography.Text>
           <InputNumber
             min={0}
-            value={amount}
+            value={localAmount}
             onChange={onChange}
             parser={parser}
             formatter={formatter}
